@@ -17,6 +17,8 @@ namespace CondominioAPI.Controllers
 
         // Obter todos os condomínios
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<Condominio>>> GetCondominios()
         {
             var condominios = await _service.GetAllAsync();
@@ -25,6 +27,9 @@ namespace CondominioAPI.Controllers
 
         // Obter um condomínio específico pelo ID
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Produces("application/json")]
         public async Task<ActionResult<Condominio>> GetCondominio(Guid id)
         {
             var condominio = await _service.GetByIdAsync(id);
@@ -39,6 +44,9 @@ namespace CondominioAPI.Controllers
 
         // Criar um novo condomínio
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Produces("application/json")]
         public async Task<ActionResult<Condominio>> CreateCondominio(Condominio condominio)
         {
             await _service.AddAsync(condominio);
@@ -47,6 +55,9 @@ namespace CondominioAPI.Controllers
 
         // Atualizar um condomínio existente
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Produces("application/json")]
         public async Task<IActionResult> UpdateCondominio(Guid id, Condominio condominio)
         {
             if (id != condominio.Id)
@@ -60,6 +71,9 @@ namespace CondominioAPI.Controllers
 
         // Excluir um condomínio pelo ID
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Produces("application/json")]
         public async Task<IActionResult> DeleteCondominio(Guid id)
         {
             var condominio = await _service.GetByIdAsync(id);
@@ -74,4 +88,3 @@ namespace CondominioAPI.Controllers
         }
     }
 }
-
