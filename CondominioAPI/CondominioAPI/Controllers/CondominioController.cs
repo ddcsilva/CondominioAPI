@@ -1,5 +1,5 @@
 ﻿using CondominioAPI.Domain.Entities;
-using CondominioAPI.Domain.Repositories;
+using CondominioAPI.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CondominioAPI.Controllers
@@ -8,18 +8,18 @@ namespace CondominioAPI.Controllers
     [Route("api/[controller]")]
     public class CondominioController : ControllerBase
     {
-        private readonly ICondominioRepository _repository;
+        private readonly ICondominioService _service;
 
-        public CondominioController(ICondominioRepository repository)
+        public CondominioController(ICondominioService service)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         // Obter todos os condomínios
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Condominio>>> GetCondominios()
         {
-            var condominios = await _repository.GetAllAsync();
+            var condominios = await _service.GetAllAsync();
             return Ok(condominios);
         }
 
@@ -27,7 +27,7 @@ namespace CondominioAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Condominio>> GetCondominio(Guid id)
         {
-            var condominio = await _repository.GetByIdAsync(id);
+            var condominio = await _service.GetByIdAsync(id);
 
             if (condominio == null)
             {
@@ -41,7 +41,7 @@ namespace CondominioAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Condominio>> CreateCondominio(Condominio condominio)
         {
-            await _repository.AddAsync(condominio);
+            await _service.AddAsync(condominio);
             return CreatedAtAction(nameof(GetCondominio), new { id = condominio.Id }, condominio);
         }
 
@@ -54,7 +54,7 @@ namespace CondominioAPI.Controllers
                 return BadRequest();
             }
 
-            await _repository.UpdateAsync(condominio);
+            await _service.UpdateAsync(condominio);
             return NoContent();
         }
 
@@ -62,14 +62,14 @@ namespace CondominioAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCondominio(Guid id)
         {
-            var condominio = await _repository.GetByIdAsync(id);
+            var condominio = await _service.GetByIdAsync(id);
 
             if (condominio == null)
             {
                 return NotFound();
             }
 
-            await _repository.DeleteAsync(id);
+            await _service.DeleteAsync(id);
             return NoContent();
         }
     }

@@ -1,4 +1,5 @@
 using CondominioAPI.Domain.Repositories;
+using CondominioAPI.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<ICondominioRepository, CondominioRepository>();
+builder.Services.AddScoped<ICondominioService, CondominioService>();
 
 var app = builder.Build();
 
