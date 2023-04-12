@@ -5,6 +5,14 @@ VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CondominioAPI", "CondominioAPI\CondominioAPI.csproj", "{2E0EDEAE-B3A1-486E-A089-5673372B4E4C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CondominioAPI.Domain", "CondominioAPI.Domain\CondominioAPI.Domain.csproj", "{5F55DBC4-FCF3-4D65-AB2C-06229F497B15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CondominioAPI.Infrastructure", "CondominioAPI.Infrastructure\CondominioAPI.Infrastructure.csproj", "{F1D1F39D-0136-41FD-8767-5BCB6F8FE15D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CondominioAPI.Application", "CondominioAPI.Application\CondominioAPI.Application.csproj", "{105C22A9-D477-4729-8A25-8F7760DE3118}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CondominioAPI.Tests", "CondominioAPI.Tests\CondominioAPI.Tests.csproj", "{BD668032-AD4D-407F-AD5D-EFDD3477E6E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +23,22 @@ Global
 		{2E0EDEAE-B3A1-486E-A089-5673372B4E4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E0EDEAE-B3A1-486E-A089-5673372B4E4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E0EDEAE-B3A1-486E-A089-5673372B4E4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F55DBC4-FCF3-4D65-AB2C-06229F497B15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F55DBC4-FCF3-4D65-AB2C-06229F497B15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F55DBC4-FCF3-4D65-AB2C-06229F497B15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F55DBC4-FCF3-4D65-AB2C-06229F497B15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1D1F39D-0136-41FD-8767-5BCB6F8FE15D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1D1F39D-0136-41FD-8767-5BCB6F8FE15D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1D1F39D-0136-41FD-8767-5BCB6F8FE15D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1D1F39D-0136-41FD-8767-5BCB6F8FE15D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{105C22A9-D477-4729-8A25-8F7760DE3118}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{105C22A9-D477-4729-8A25-8F7760DE3118}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{105C22A9-D477-4729-8A25-8F7760DE3118}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{105C22A9-D477-4729-8A25-8F7760DE3118}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD668032-AD4D-407F-AD5D-EFDD3477E6E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD668032-AD4D-407F-AD5D-EFDD3477E6E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD668032-AD4D-407F-AD5D-EFDD3477E6E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD668032-AD4D-407F-AD5D-EFDD3477E6E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
