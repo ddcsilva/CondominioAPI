@@ -1,7 +1,7 @@
 ﻿using CondominioAPI.Domain.Entities;
 using CondominioAPI.Domain.Repositories;
 
-namespace CondominioAPI.Domain.Services
+namespace CondominioAPI.Application.Services
 {
     public class CondominioService : ICondominioService
     {

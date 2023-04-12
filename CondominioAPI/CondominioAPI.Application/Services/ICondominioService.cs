@@ -1,6 +1,6 @@
 ﻿using CondominioAPI.Domain.Entities;
 
-namespace CondominioAPI.Domain.Services
+namespace CondominioAPI.Application.Services
 {
     public interface ICondominioService
     {

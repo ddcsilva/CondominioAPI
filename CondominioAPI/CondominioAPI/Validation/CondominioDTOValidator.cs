@@ -1,4 +1,4 @@
-﻿using CondominioAPI.Domain.DTOs;
+﻿using CondominioAPI.Application.DTOs;
 using FluentValidation;
 
 namespace CondominioAPI.Validation

@@ -1,6 +1,6 @@
 ﻿using CondominioAPI.Domain.Entities;
 using CondominioAPI.Domain.Repositories;
-using CondominioAPI.Domain.Services;
+using CondominioAPI.Application.Services;
 using Moq;
 
 namespace CondominioAPI.Tests.Services

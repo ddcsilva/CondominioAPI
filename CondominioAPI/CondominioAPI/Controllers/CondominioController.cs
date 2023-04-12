@@ -1,5 +1,5 @@
-﻿using CondominioAPI.Domain.Entities;
-using CondominioAPI.Domain.Services;
+﻿using CondominioAPI.Application.Services;
+using CondominioAPI.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CondominioAPI.Controllers
@@ -9,10 +9,12 @@ namespace CondominioAPI.Controllers
     public class CondominioController : ControllerBase
     {
         private readonly ICondominioService _service;
+        private readonly ILogger<CondominioController> _logger;
 
-        public CondominioController(ICondominioService service)
+        public CondominioController(ICondominioService service, ILogger<CondominioController> logger)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // Obter todos os condomínios
@@ -21,8 +23,19 @@ namespace CondominioAPI.Controllers
         [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<Condominio>>> GetCondominios()
         {
-            var condominios = await _service.GetAllAsync();
-            return Ok(condominios);
+            _logger.LogInformation("Iniciando a busca por todos os condomínios.");
+
+            try
+            {
+                var condominios = await _service.GetAllAsync();
+                _logger.LogInformation("Busca por todos os condomínios concluída com sucesso.");
+                return Ok(condominios);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao buscar todos os condomínios.");
+                throw;
+            }
         }
 
         // Obter um condomínio específico pelo ID
@@ -32,14 +45,26 @@ namespace CondominioAPI.Controllers
         [Produces("application/json")]
         public async Task<ActionResult<Condominio>> GetCondominio(Guid id)
         {
-            var condominio = await _service.GetByIdAsync(id);
+            _logger.LogInformation($"Iniciando a busca pelo condomínio com ID {id}.");
 
-            if (condominio == null)
+            try
             {
-                return NotFound();
-            }
+                var condominio = await _service.GetByIdAsync(id);
 
-            return Ok(condominio);
+                if (condominio == null)
+                {
+                    _logger.LogWarning($"Condomínio com ID {id} não encontrado.");
+                    return NotFound();
+                }
+
+                _logger.LogInformation($"Condomínio com ID {id} encontrado com sucesso.");
+                return Ok(condominio);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao buscar o condomínio com ID {id}.");
+                throw;
+            }
         }
 
         // Criar um novo condomínio
@@ -49,8 +74,19 @@ namespace CondominioAPI.Controllers
         [Produces("application/json")]
         public async Task<ActionResult<Condominio>> CreateCondominio(Condominio condominio)
         {
-            await _service.AddAsync(condominio);
-            return CreatedAtAction(nameof(GetCondominio), new { id = condominio.Id }, condominio);
+            _logger.LogInformation("Iniciando a criação de um novo condomínio.");
+
+            try
+            {
+                await _service.AddAsync(condominio);
+                _logger.LogInformation($"Condomínio criado com sucesso. ID: {condominio.Id}.");
+                return CreatedAtAction(nameof(GetCondominio), new { id = condominio.Id }, condominio);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao criar um novo condomínio.");
+                throw;
+            }
         }
 
         // Atualizar um condomínio existente
@@ -62,11 +98,23 @@ namespace CondominioAPI.Controllers
         {
             if (id != condominio.Id)
             {
+                _logger.LogWarning($"Os IDs fornecidos não correspondem: {id} e {condominio.Id}.");
                 return BadRequest();
             }
 
-            await _service.UpdateAsync(condominio);
-            return NoContent();
+            _logger.LogInformation($"Iniciando a atualização do condomínio com ID {id}.");
+
+            try
+            {
+                await _service.UpdateAsync(condominio);
+                _logger.LogInformation($"Condomínio com ID {id} atualizado com sucesso.");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao atualizar o condomínio com ID {id}.");
+                throw;
+            }
         }
 
         // Excluir um condomínio pelo ID
@@ -76,15 +124,27 @@ namespace CondominioAPI.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> DeleteCondominio(Guid id)
         {
-            var condominio = await _service.GetByIdAsync(id);
+            _logger.LogInformation($"Iniciando a exclusão do condomínio com ID {id}.");
 
-            if (condominio == null)
+            try
             {
-                return NotFound();
-            }
+                var condominio = await _service.GetByIdAsync(id);
 
-            await _service.DeleteAsync(id);
-            return NoContent();
+                if (condominio == null)
+                {
+                    _logger.LogWarning($"Condomínio com ID {id} não encontrado.");
+                    return NotFound();
+                }
+
+                await _service.DeleteAsync(id);
+                _logger.LogInformation($"Condomínio com ID {id} excluído com sucesso.");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao excluir o condomínio com ID {id}.");
+                throw;
+            }
         }
     }
 }

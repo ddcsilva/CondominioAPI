@@ -1,4 +1,4 @@
-﻿namespace CondominioAPI.Domain.DTOs
+﻿namespace CondominioAPI.Application.DTOs
 {
     public class CondominioDTO
     {
