@@ -118,5 +118,46 @@ namespace CondominioAPI.Tests.Services
             _mockRepository.Verify(repo => repo.DeleteAsync(id), Times.Once());
         }
 
+        [Fact]
+        public async Task ObterCondominioPorId_RetornaCondominio()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var condominio = new Condominio
+            {
+                Id = id,
+                Nome = "Condominio A",
+                CNPJ = "00.000.000/0000-00",
+                Endereco = "Rua A, 123",
+                NumeroUnidades = 10,
+                NumeroBlocos = 2,
+                DataFundacao = DateTime.Now.AddYears(-5)
+            };
+
+            _mockRepository.Setup(repo => repo.GetByIdAsync(id)).ReturnsAsync(condominio);
+
+            // Act
+            var result = await _service.GetByIdAsync(id);
+
+            // Assert
+            Assert.Equal(condominio, result);
+            _mockRepository.Verify(repo => repo.GetByIdAsync(id), Times.Once());
+        }
+
+        [Fact]
+        public async Task ObterCondominioPorId_RetornaNuloSeNaoEncontrado()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+
+            _mockRepository.Setup(repo => repo.GetByIdAsync(id)).ReturnsAsync((Condominio)null);
+
+            // Act
+            var result = await _service.GetByIdAsync(id);
+
+            // Assert
+            Assert.Null(result);
+            _mockRepository.Verify(repo => repo.GetByIdAsync(id), Times.Once());
+        }
     }
 }
