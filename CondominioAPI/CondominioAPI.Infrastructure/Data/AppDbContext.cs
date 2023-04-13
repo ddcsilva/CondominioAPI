@@ -7,6 +7,7 @@ namespace CondominioAPI.Infrastructure.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
+            Condominios = Set<Condominio>();
         }
 
         public DbSet<Condominio> Condominios { get; set; }

@@ -1,43 +1,38 @@
-using CondominioAPI.Infrastructure.Repositories;
-using CondominioAPI.Application.Services;
+using CondominioAPI.Extensions;
+using CondominioAPI.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using CondominioAPI.Application.Mappings;
 using CondominioAPI.Validation;
 using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.Events;
-using CondominioAPI.Application.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configuração do Serilog
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .MinimumLevel.Debug()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-    .Enrich.FromLogContext()
-    .WriteTo.Console()
-    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+builder.Services.AddSerilogConfiguration(builder.Configuration);
 
 builder.Host.UseSerilog();
 
 // Adicionar serviços ao container.
 builder.Services.AddControllers();
 
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 // Adicionar FluentValidation
-builder.Services.AddFluentValidationAutoValidation()
-    .AddFluentValidationClientsideAdapters()
-    .AddValidatorsFromAssemblyContaining<CondominioDTOValidator>();
+builder.Services.AddFluentValidationConfiguration();
+
+builder.Services.AddValidatorsFromAssemblyContaining<CondominioDTOValidator>();
 
 builder.Services.AddAutoMapper(typeof(CondominioProfile));
 
 // Registrar repositórios e serviços
-builder.Services.AddScoped<ICondominioRepository, CondominioRepository>();
-builder.Services.AddScoped<ICondominioService, CondominioService>();
+builder.Services.RegisterRepositoriesAndServices();
 
 // Configurar o Swagger para gerar a documentação da API
-builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "CondominioAPI", Version = "v1" }); });
+builder.Services.AddSwaggerConfiguration();
+
+// Configurar CORS
+builder.Services.AddCustomCors();
 
 var app = builder.Build();
 
@@ -57,8 +52,11 @@ app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Condomini
 
 app.UseAuthorization();
 
+app.UseCustomCors(); // Adicione esta linha para habilitar o CORS
+
 app.MapControllers();
 
 app.Run();
 
 public partial class Program { }
+
