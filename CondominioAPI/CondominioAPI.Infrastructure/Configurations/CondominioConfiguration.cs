@@ -34,7 +34,7 @@ namespace CondominioAPI.Infrastructure.Data.Configurations
 
             builder.Property(c => c.NumeroBlocos)
                 .HasColumnName("COND_NumeroBlocos")
-                .IsRequired();
+                .IsRequired(false);
 
             builder.Property(c => c.DataFundacao)
                 .HasColumnName("COND_DataFundacao")

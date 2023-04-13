@@ -32,11 +32,9 @@ namespace CondominioAPI.Application.Services
             var existingCondominio = await _repository.GetByIdAsync(condominio.Id);
             if (existingCondominio != null)
             {
-                existingCondominio.ApplyChanges(condominio);
-                await _repository.UpdateAsync(existingCondominio);
+                await _repository.UpdateAsync(condominio);
             }
         }
-
 
         public Task DeleteAsync(Guid id)
         {

@@ -1,5 +1,8 @@
 ﻿namespace CondominioAPI.Domain.Entities
 {
+    /// <summary>
+    /// Representa um condomínio.
+    /// </summary>
     public class Condominio : BaseEntity
     {
         public Condominio()
@@ -15,15 +18,5 @@
         public int NumeroUnidades { get; set; }
         public int? NumeroBlocos { get; set; }
         public DateTime DataFundacao { get; set; }
-
-        public void ApplyChanges(Condominio condominio)
-        {
-            Nome = condominio.Nome;
-            CNPJ = condominio.CNPJ;
-            Endereco = condominio.Endereco;
-            NumeroUnidades = condominio.NumeroUnidades;
-            NumeroBlocos = condominio.NumeroBlocos;
-            DataFundacao = condominio.DataFundacao;
-        }
     }
 }

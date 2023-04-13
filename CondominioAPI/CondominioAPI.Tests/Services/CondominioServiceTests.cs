@@ -95,7 +95,7 @@ namespace CondominioAPI.Tests.Services
                 DataFundacao = DateTime.Now.AddYears(-5)
             };
 
-            _mockRepository.Setup(repo => repo.UpdateAsync(condominio)).Returns(Task.CompletedTask);
+            _mockRepository.Setup(repo => repo.GetByIdAsync(condominio.Id)).ReturnsAsync(condominio);
 
             // Act
             await _service.UpdateAsync(condominio);

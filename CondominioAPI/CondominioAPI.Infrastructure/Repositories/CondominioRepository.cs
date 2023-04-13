@@ -45,16 +45,5 @@ namespace CondominioAPI.Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-
-        public async Task<bool> AnyAsync()
-        {
-            return await _context.Condominios.AnyAsync();
-        }
-
-        public async Task AddRangeAsync(IEnumerable<Condominio> condominios)
-        {
-            await _context.Condominios.AddRangeAsync(condominios);
-            await _context.SaveChangesAsync();
-        }
     }
 }

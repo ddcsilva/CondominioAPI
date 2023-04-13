@@ -1,7 +1,6 @@
 ﻿using CondominioAPI.Validation;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.Extensions.DependencyInjection;
 
 public static class FluentValidationExtensions
 {

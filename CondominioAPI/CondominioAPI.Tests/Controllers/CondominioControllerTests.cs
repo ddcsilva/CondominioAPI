@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http.Json;
 using CondominioAPI.Domain.Entities;
 using Xunit.Abstractions;
+using CondominioAPI.Application.DTOs;
 
 namespace CondominioAPI.Tests.Controllers
 {
@@ -45,18 +46,17 @@ namespace CondominioAPI.Tests.Controllers
         public async Task AdicionarCondominio_RetornaStatusCodeDeCriado()
         {
             // Arrange
-            var condominio = new Condominio
+            var condominioDTO = new CondominioDTO
             {
-                Nome = "Condominio A",
-                CNPJ = "00000000000000", // CNPJ modificado para ter exatamente 14 caracteres
-                Endereco = "Rua A, 123",
+                Nome = "Condomínio Exemplo",
+                CNPJ = "12345678901234",
+                Endereco = "Rua Exemplo, 123",
                 NumeroUnidades = 10,
-                NumeroBlocos = 2,
-                DataFundacao = DateTime.Now.AddYears(-5)
+                DataFundacao = DateTime.Now.AddDays(-1)
             };
 
             // Act
-            var response = await _client.PostAsJsonAsync("/api/condominio", condominio);
+            var response = await _client.PostAsJsonAsync("/api/condominio", condominioDTO);
 
             // Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
