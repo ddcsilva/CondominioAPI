@@ -23,4 +23,8 @@
     <ProjectReference Include="..\CondominioAPI.Application\CondominioAPI.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
 </Project>

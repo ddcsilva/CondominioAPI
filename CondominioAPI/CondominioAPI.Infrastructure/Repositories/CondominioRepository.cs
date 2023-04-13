@@ -1,57 +1,60 @@
 ﻿using CondominioAPI.Domain.Entities;
+using CondominioAPI.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CondominioAPI.Infrastructure.Repositories
 {
     public class CondominioRepository : ICondominioRepository
     {
-        private readonly List<Condominio> _condominios = new List<Condominio>();
+        private readonly AppDbContext _context;
+
+        public CondominioRepository(AppDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<IEnumerable<Condominio>> GetAllAsync()
         {
-            return await Task.FromResult(_condominios.ToList());
+            return await _context.Condominios.ToListAsync();
         }
 
         public async Task<Condominio?> GetByIdAsync(Guid id)
         {
-            var condominio = _condominios.FirstOrDefault(c => c.Id == id);
-            return await Task.FromResult(condominio);
+            return await _context.Condominios.FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Condominio> AddAsync(Condominio condominio)
         {
-            _condominios.Add(condominio);
-            return await Task.FromResult(condominio);
+            await _context.Condominios.AddAsync(condominio);
+            await _context.SaveChangesAsync();
+            return condominio;
         }
 
         public async Task UpdateAsync(Condominio condominioToUpdate)
         {
-            var index = _condominios.FindIndex(c => c.Id == condominioToUpdate.Id);
-            if (index >= 0)
-            {
-                _condominios[index] = condominioToUpdate;
-            }
-            await Task.CompletedTask;
+            _context.Condominios.Update(condominioToUpdate);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var condominio = _condominios.FirstOrDefault(c => c.Id == id);
+            var condominio = await _context.Condominios.FirstOrDefaultAsync(c => c.Id == id);
             if (condominio != null)
             {
-                _condominios.Remove(condominio);
+                _context.Condominios.Remove(condominio);
+                await _context.SaveChangesAsync();
             }
-            await Task.CompletedTask;
         }
 
         public async Task<bool> AnyAsync()
         {
-            return await Task.FromResult(_condominios.Any());
+            return await _context.Condominios.AnyAsync();
         }
 
         public async Task AddRangeAsync(IEnumerable<Condominio> condominios)
         {
-            _condominios.AddRange(condominios);
-            await Task.CompletedTask;
+            await _context.Condominios.AddRangeAsync(condominios);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -11,9 +11,7 @@ namespace CondominioAPI.Infrastructure.Data.Configurations
             builder.ToTable("TB_Condominio");
 
             builder.HasKey(c => c.Id);
-
-            builder.Property(c => c.Id)
-                .HasColumnName("ID");
+            builder.Property(c => c.Id).ValueGeneratedOnAdd();
 
             builder.Property(c => c.Nome)
                 .HasColumnName("COND_Nome")

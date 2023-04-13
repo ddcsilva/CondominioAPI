@@ -7,7 +7,7 @@ namespace CondominioAPI.Infrastructure.Repositories
         Task<IEnumerable<Condominio>> GetAllAsync();
         Task<Condominio?> GetByIdAsync(Guid id);
         Task<Condominio> AddAsync(Condominio condominio);
-        Task UpdateAsync(Condominio condominio);
+        Task UpdateAsync(Condominio condominioToUpdate);
         Task DeleteAsync(Guid id);
         Task<bool> AnyAsync();
         Task AddRangeAsync(IEnumerable<Condominio> condominios);

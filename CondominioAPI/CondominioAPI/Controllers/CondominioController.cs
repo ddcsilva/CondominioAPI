@@ -90,14 +90,17 @@ namespace CondominioAPI.Controllers
                     return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Condomínio não encontrado", null));
                 }
 
-                var updatedCondominio = _mapper.Map(condominioDTO, condominioToUpdate);
+                var updatedCondominio = _mapper.Map<Condominio>(condominioDTO);
+                updatedCondominio.Id = id;
                 await _service.UpdateAsync(updatedCondominio);
 
-                return StatusCode(StatusCodes.Status204NoContent, new ApiResponse(StatusCodes.Status204NoContent, "Condomínio atualizado com sucesso", null));
+                var updatedCondominioDTO = _mapper.Map<CondominioDTO>(updatedCondominio);
+                return Ok(new ApiResponse(StatusCodes.Status200OK, "Condomínio atualizado com sucesso", updatedCondominioDTO));
             });
 
             return result;
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCondominio(Guid id)
@@ -112,7 +115,7 @@ namespace CondominioAPI.Controllers
                 }
 
                 await _service.DeleteAsync(condominioToDelete.Id);
-                return StatusCode(StatusCodes.Status204NoContent, new ApiResponse(StatusCodes.Status204NoContent, "Condomínio excluído com sucesso", null));
+                return Ok(new ApiResponse(StatusCodes.Status200OK, "Condomínio excluído com sucesso", null));
             });
 
             return result;

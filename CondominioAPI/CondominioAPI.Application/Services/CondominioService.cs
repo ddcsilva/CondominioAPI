@@ -27,10 +27,16 @@ namespace CondominioAPI.Application.Services
             return _repository.AddAsync(condominio);
         }
 
-        public Task UpdateAsync(Condominio condominio)
+        public async Task UpdateAsync(Condominio condominio)
         {
-            return _repository.UpdateAsync(condominio);
+            var existingCondominio = await _repository.GetByIdAsync(condominio.Id);
+            if (existingCondominio != null)
+            {
+                existingCondominio.ApplyChanges(condominio);
+                await _repository.UpdateAsync(existingCondominio);
+            }
         }
+
 
         public Task DeleteAsync(Guid id)
         {
