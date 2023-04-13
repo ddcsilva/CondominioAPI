@@ -42,5 +42,16 @@ namespace CondominioAPI.Domain.Repositories
             }
             await Task.CompletedTask;
         }
+
+        public async Task<bool> AnyAsync()
+        {
+            return await Task.FromResult(_condominios.Any());
+        }
+
+        public async Task AddRangeAsync(IEnumerable<Condominio> condominios)
+        {
+            _condominios.AddRange(condominios);
+            await Task.CompletedTask;
+        }
     }
 }
