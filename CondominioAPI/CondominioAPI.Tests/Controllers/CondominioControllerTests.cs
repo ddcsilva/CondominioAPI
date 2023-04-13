@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using CondominioAPI.Domain.Entities;
+using Xunit.Abstractions;
 
 namespace CondominioAPI.Tests.Controllers
 {
@@ -10,11 +11,12 @@ namespace CondominioAPI.Tests.Controllers
         private readonly WebApplicationFactory<Program> _factory;
         private readonly HttpClient _client;
 
-        public CondominioControllerTests(WebApplicationFactory<Program> factory)
+        public CondominioControllerTests(WebApplicationFactory<Program> factory, ITestOutputHelper output)
         {
             _factory = factory;
             _client = _factory.CreateClient();
         }
+
 
         [Fact]
         public async Task ObterCondominios_RetornaStatusCodeDeSucesso()
@@ -46,7 +48,7 @@ namespace CondominioAPI.Tests.Controllers
             var condominio = new Condominio
             {
                 Nome = "Condominio A",
-                CNPJ = "00.000.000/0000-00",
+                CNPJ = "00000000000000", // CNPJ modificado para ter exatamente 14 caracteres
                 Endereco = "Rua A, 123",
                 NumeroUnidades = 10,
                 NumeroBlocos = 2,
@@ -59,6 +61,8 @@ namespace CondominioAPI.Tests.Controllers
             // Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         }
+
+
 
         [Fact]
         public async Task AtualizarCondominio_RetornaStatusCodeDeSucesso()

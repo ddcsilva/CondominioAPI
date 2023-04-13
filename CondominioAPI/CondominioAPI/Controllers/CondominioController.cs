@@ -1,5 +1,8 @@
-﻿using CondominioAPI.Application.Services;
+﻿using AutoMapper;
+using CondominioAPI.Application.DTOs;
+using CondominioAPI.Application.Services;
 using CondominioAPI.Domain.Entities;
+using CondominioAPI.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CondominioAPI.Controllers
@@ -9,141 +12,123 @@ namespace CondominioAPI.Controllers
     public class CondominioController : ControllerBase
     {
         private readonly ICondominioService _service;
+        private readonly IMapper _mapper;
         private readonly ILogger<CondominioController> _logger;
 
-        public CondominioController(ICondominioService service, ILogger<CondominioController> logger)
+        public CondominioController(ICondominioService service, IMapper mapper, ILogger<CondominioController> logger)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        // Obter todos os condomínios
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [Produces("application/json")]
-        public async Task<ActionResult<IEnumerable<Condominio>>> GetCondominios()
+        public async Task<IActionResult> GetCondominios()
         {
             _logger.LogInformation("Iniciando a busca por todos os condomínios.");
-
-            try
+            var result = await ExecuteAsync(async () =>
             {
                 var condominios = await _service.GetAllAsync();
-                _logger.LogInformation("Busca por todos os condomínios concluída com sucesso.");
-                return Ok(condominios);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao buscar todos os condomínios.");
-                throw;
-            }
+                var condominiosDTO = _mapper.Map<IEnumerable<CondominioDTO>>(condominios);
+                return Ok(new ApiResponse(StatusCodes.Status200OK, "Busca realizada com sucesso", condominiosDTO));
+            });
+
+            return result;
         }
 
-        // Obter um condomínio específico pelo ID
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Produces("application/json")]
-        public async Task<ActionResult<Condominio>> GetCondominio(Guid id)
+        public async Task<IActionResult> GetCondominioById(Guid id)
         {
-            _logger.LogInformation($"Iniciando a busca pelo condomínio com ID {id}.");
-
-            try
+            _logger.LogInformation($"Buscando condomínio por ID: {id}.");
+            var result = await ExecuteAsync(async () =>
             {
                 var condominio = await _service.GetByIdAsync(id);
-
                 if (condominio == null)
                 {
-                    _logger.LogWarning($"Condomínio com ID {id} não encontrado.");
-                    return NotFound();
+                    return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Condomínio não encontrado", null));
                 }
 
-                _logger.LogInformation($"Condomínio com ID {id} encontrado com sucesso.");
-                return Ok(condominio);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Erro ao buscar o condomínio com ID {id}.");
-                throw;
-            }
+                var condominioDTO = _mapper.Map<CondominioDTO>(condominio);
+                return Ok(new ApiResponse(StatusCodes.Status200OK, "Busca realizada com sucesso", condominioDTO));
+            });
+
+            return result;
         }
 
-        // Criar um novo condomínio
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Produces("application/json")]
-        public async Task<ActionResult<Condominio>> CreateCondominio(Condominio condominio)
+        public async Task<IActionResult> CreateCondominio(CondominioDTO condominioDTO)
         {
-            _logger.LogInformation("Iniciando a criação de um novo condomínio.");
+            _logger.LogInformation("Criando um novo condomínio.");
 
-            try
+            if (!ModelState.IsValid)
             {
-                await _service.AddAsync(condominio);
-                _logger.LogInformation($"Condomínio criado com sucesso. ID: {condominio.Id}.");
-                return CreatedAtAction(nameof(GetCondominio), new { id = condominio.Id }, condominio);
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Dados de entrada inválidos", ModelState));
             }
-            catch (Exception ex)
+
+            var result = await ExecuteAsync(async () =>
             {
-                _logger.LogError(ex, "Erro ao criar um novo condomínio.");
-                throw;
-            }
+                var condominio = _mapper.Map<Condominio>(condominioDTO);
+                var createdCondominio = await _service.AddAsync(condominio);
+                var createdCondominioDTO = _mapper.Map<CondominioDTO>(createdCondominio);
+                return CreatedAtAction(nameof(GetCondominioById), new { id = createdCondominioDTO.Id }, new ApiResponse(StatusCodes.Status201Created, "Condomínio criado com sucesso", createdCondominioDTO));
+            });
+
+            return result;
         }
 
-        // Atualizar um condomínio existente
+
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Produces("application/json")]
-        public async Task<IActionResult> UpdateCondominio(Guid id, Condominio condominio)
+        public async Task<IActionResult> UpdateCondominio(Guid id, CondominioDTO condominioDTO)
         {
-            if (id != condominio.Id)
+            _logger.LogInformation($"Atualizando o condomínio com ID: {id}.");
+            var result = await ExecuteAsync(async () =>
             {
-                _logger.LogWarning($"Os IDs fornecidos não correspondem: {id} e {condominio.Id}.");
-                return BadRequest();
-            }
+                var condominioToUpdate = await _service.GetByIdAsync(id);
 
-            _logger.LogInformation($"Iniciando a atualização do condomínio com ID {id}.");
+                if (condominioToUpdate == null)
+                {
+                    return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Condomínio não encontrado", null));
+                }
 
-            try
-            {
-                await _service.UpdateAsync(condominio);
-                _logger.LogInformation($"Condomínio com ID {id} atualizado com sucesso.");
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Erro ao atualizar o condomínio com ID {id}.");
-                throw;
-            }
+                var updatedCondominio = _mapper.Map(condominioDTO, condominioToUpdate);
+                await _service.UpdateAsync(updatedCondominio);
+
+                return StatusCode(StatusCodes.Status204NoContent, new ApiResponse(StatusCodes.Status204NoContent, "Condomínio atualizado com sucesso", null));
+            });
+
+            return result;
         }
 
-        // Excluir um condomínio pelo ID
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Produces("application/json")]
         public async Task<IActionResult> DeleteCondominio(Guid id)
         {
-            _logger.LogInformation($"Iniciando a exclusão do condomínio com ID {id}.");
-
-            try
+            _logger.LogInformation($"Excluindo o condomínio com ID: {id}.");
+            var result = await ExecuteAsync(async () =>
             {
-                var condominio = await _service.GetByIdAsync(id);
-
-                if (condominio == null)
+                var condominioToDelete = await _service.GetByIdAsync(id);
+                if (condominioToDelete == null)
                 {
-                    _logger.LogWarning($"Condomínio com ID {id} não encontrado.");
-                    return NotFound();
+                    return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Condomínio não encontrado", null));
                 }
 
-                await _service.DeleteAsync(id);
-                _logger.LogInformation($"Condomínio com ID {id} excluído com sucesso.");
-                return NoContent();
+                await _service.DeleteAsync(condominioToDelete.Id);
+                return StatusCode(StatusCodes.Status204NoContent, new ApiResponse(StatusCodes.Status204NoContent, "Condomínio excluído com sucesso", null));
+            });
+
+            return result;
+        }
+
+        private async Task<IActionResult> ExecuteAsync(Func<Task<IActionResult>> action)
+        {
+            try
+            {
+                return await action();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao excluir o condomínio com ID {id}.");
-                throw;
+                _logger.LogError(ex, "Erro ao executar a ação.");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new ApiResponse(StatusCodes.Status500InternalServerError, "Erro interno do servidor", null));
             }
         }
     }

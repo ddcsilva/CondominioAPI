@@ -6,6 +6,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
+using CondominioAPI.Application.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,8 @@ builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters()
     .AddValidatorsFromAssemblyContaining<CondominioDTOValidator>();
+
+builder.Services.AddAutoMapper(typeof(CondominioProfile));
 
 // Registrar repositórios e serviços
 builder.Services.AddScoped<ICondominioRepository, CondominioRepository>();
