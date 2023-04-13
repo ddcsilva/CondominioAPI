@@ -1,4 +1,4 @@
-using CondominioAPI.Domain.Repositories;
+using CondominioAPI.Infrastructure.Repositories;
 using CondominioAPI.Application.Services;
 using CondominioAPI.Validation;
 using FluentValidation;

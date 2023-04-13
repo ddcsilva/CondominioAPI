@@ -1,5 +1,5 @@
 ﻿using CondominioAPI.Domain.Entities;
-using CondominioAPI.Domain.Repositories;
+using CondominioAPI.Infrastructure.Repositories;
 using CondominioAPI.Application.Services;
 using Moq;
 

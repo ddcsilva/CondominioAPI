@@ -1,6 +1,6 @@
 ﻿using CondominioAPI.Domain.Entities;
 
-namespace CondominioAPI.Domain.Repositories
+namespace CondominioAPI.Infrastructure.Repositories
 {
     public class CondominioRepository : ICondominioRepository
     {

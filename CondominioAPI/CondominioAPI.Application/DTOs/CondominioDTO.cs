@@ -2,6 +2,13 @@
 {
     public class CondominioDTO
     {
+        public CondominioDTO()
+        {
+            Nome = string.Empty;
+            CNPJ = string.Empty;
+            Endereco = string.Empty;
+        }
+
         public Guid Id { get; set; }
         public string Nome { get; set; }
         public string CNPJ { get; set; }
